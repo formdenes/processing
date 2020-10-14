@@ -33,8 +33,6 @@ void draw(){
   }
   println(frameRate);
   if (walkers.size() == 0){
-    println(walkers);
     noLoop();
-    redraw();
   }
 }
