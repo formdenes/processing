@@ -6,6 +6,11 @@ class Walker {
 		pos = new PVector(random(width), random(height));
 		r = radius;
 	}
+
+  Walker(float radius) {
+    pos = new PVector(random(width / 2 - radius, width / 2 + radius), random(height / 2 - radius, height / 2 + radius));
+    r = radius;
+  }
 	
 	Walker(float x, float y) {
 		pos = new PVector(x, y);
@@ -25,11 +30,15 @@ class Walker {
 		return false;
 	}
 	
-	void walk() {
+  void walk(){
+    this.walk(sqrt(width*width + height*height));
+  }
+
+	void walk(float maxRadius) {
 		PVector vel = PVector.random2D();
 		pos.add(vel);
-		pos.x = constrain(pos.x, 0, width);
-		pos.y = constrain(pos.y, 0, height);
+		pos.x = constrain(pos.x, width/2 - maxRadius, width / 2 + maxRadius);
+		pos.y = constrain(pos.y, height / 2 - maxRadius, height / 2 + maxRadius);
 	}
 	
 	void show(float r, color col) {
