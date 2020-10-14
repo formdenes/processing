@@ -114,7 +114,7 @@ class Interpolant {
     }
   }
   
-  color getGradientMonotonCubic(float loc) {
+  color getGradientMonotonCubic(float loc, int alpha) {
     int i = xs.length - 1;
     if ((float) loc == xs[i]) {return color(rs[i], gs[i], bs[i]);}
     
@@ -134,6 +134,6 @@ class Interpolant {
     float red = rs[i] + c1rs[i] * diff + c2rs[i] * diffSq + c3rs[i] * diff * diffSq;
     float green = gs[i] + c1gs[i] * diff + c2gs[i] * diffSq + c3gs[i] * diff * diffSq;
     float blue = bs[i] + c1bs[i] * diff + c2bs[i] * diffSq + c3bs[i] * diff * diffSq;
-    return color(red, green, blue);
+    return color(red, green, blue, (float) alpha);
   }
 }
