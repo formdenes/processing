@@ -1,11 +1,15 @@
-float stickiness = 0.2;
-int iterations = 10000;
+int seed = 555555555;
+float stickiness = 1;
+int imgTreshold = 50;
+int imgCount = 0;
+int iterations = 5000;
 int maxWalkers = 500;
-int maxTree = 15000;
-float radius = 0.5;
+int maxTree = 5000;
+float radius = 1;
 float maxDist;
 int treeSize;
-int sectionSize = 10;
+int prevTreeSize;
+int sectionSize = 50;
 ArrayList<Walker> walkers = new ArrayList<Walker>();
 ArrayList<ArrayList<Walker>> trees = new ArrayList<ArrayList<Walker>>();
 //color[] points = {color(0, 7, 100), color(32, 107, 203), color(237, 255, 255), color(255, 170, 0), color(0, 2, 0)};
@@ -14,6 +18,8 @@ color[] points = new color[colNum];
 Interpolant WikiInterpolant;
 
 void setup() {
+  prevTreeSize = treeSize;
+  random(seed);
 	maxDist = 0.0;
 	size(500,500,P2D);
 	for (int n = 0; n < colNum; n++) {
@@ -81,6 +87,11 @@ void draw() {
 		}
 	}
 	println(frameRate, treeSize, walkers.size());
+  if (treeSize - prevTreeSize > imgTreshold){
+    save("pictures_" + seed + "/tree_" + imgCount + ".png");
+    imgCount++;
+    prevTreeSize = treeSize;
+  }
 	if (walkers.size() == 0) {
 		noLoop();
 		for (int i = 0; i < trees.size(); i++) {
@@ -94,6 +105,7 @@ void draw() {
 				walker.show(radius, col);
 			}
 		}
+  save("pictures_" + seed + "/tree_" + imgCount + ".png");
 	}
 }
 
