@@ -1,10 +1,10 @@
-int seed = 555555555;
-float stickiness = 1;
+int seed = floor(random(10000000,100000000));
+float stickiness = 0.2;
 int imgTreshold = 50;
-int imgCount = 0;
+int imgCount = 2000;
 int iterations = 5000;
-int maxWalkers = 500;
-int maxTree = 5000;
+int maxWalkers = 800;
+int maxTree = 15000;
 float radius = 1;
 float maxDist;
 int treeSize;
@@ -72,9 +72,9 @@ void draw() {
 			}
 		} //<>//
 	}
-	for (int i = 0; i < walkers.size(); i++) {
-		walkers.get(i).show(radius, color(255));
-	}
+	//for (int i = 0; i < walkers.size(); i++) {
+	//	walkers.get(i).show(radius, color(255));
+	//}
 	for (int i = 0; i < trees.size(); i++) {
 		//color col = color(0,0,0);
 		ArrayList<Walker> tree = trees.get(i);
@@ -88,7 +88,7 @@ void draw() {
 	}
 	println(frameRate, treeSize, walkers.size());
   if (treeSize - prevTreeSize > imgTreshold){
-    save("pictures_" + seed + "/tree_" + imgCount + ".png");
+    save("pictures_" + seed + "/tree_" + String.valueOf(imgCount).substring(1) + ".png");
     imgCount++;
     prevTreeSize = treeSize;
   }
@@ -105,7 +105,7 @@ void draw() {
 				walker.show(radius, col);
 			}
 		}
-  save("pictures_" + seed + "/tree_" + imgCount + ".png");
+  save("pictures_" + seed + "/tree_" + String.valueOf(imgCount).substring(1) + ".png");
 	}
 }
 
