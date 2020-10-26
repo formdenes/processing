@@ -1,20 +1,22 @@
+boolean saveImg = false;
 int seed = floor(random(10000000,100000000));
 float stickiness = 0.2;
 int imgTreshold = 50;
 int imgCount = 2000;
-int iterations = 5000;
-int maxWalkers = 800;
+int iterations = 100;
+int maxWalkers = 50;
 int maxTree = 15000;
 float radius = 1;
+float maxRadius = 70;
 float maxDist;
 int treeSize;
 int prevTreeSize;
-int sectionSize = 50;
+int sectionSize = 10;
 ArrayList<Walker> walkers = new ArrayList<Walker>();
 ArrayList<ArrayList<Walker>> trees = new ArrayList<ArrayList<Walker>>();
 //color[] points = {color(0, 7, 100), color(32, 107, 203), color(237, 255, 255), color(255, 170, 0), color(0, 2, 0)};
-int colNum = 3;
-color[] points = new color[colNum];
+int colorNum = 3;
+color[] points = new color[colorNum];
 Interpolant WikiInterpolant;
 
 void setup() {
@@ -22,13 +24,17 @@ void setup() {
   random(seed);
 	maxDist = 0.0;
 	size(500,500,P2D);
-	for (int n = 0; n < colNum; n++) {
+	//Generate random color points for the gradient
+	for (int n = 0; n < colorNum; n++) {
 		points[n] = (color(randomGaussian() * 255, randomGaussian() * 255, randomGaussian() * 255));
 	}
+	//Make interpolant for gradient
 	WikiInterpolant = new Interpolant((float) sqrt(width / 2 * width / 2), points, false);
+	//Fill trees arraylist with empty tree
 	for (int i = 0; i < (ceil(width / sectionSize) * ceil(height / sectionSize)); i++) {
 		trees.add(new ArrayList<Walker>());
 	}
+	//Make first stuck point
 	int index = getTreeSection(width / 2, height / 2);
 	//println(index);
 	trees.get(index).add(new Walker(width / 2, height / 2));
@@ -39,31 +45,36 @@ void setup() {
 
 void draw() {
 	background(20);
-	
+	//Fill walkers with walker if not exceed limit
 	while(walkers.size() + treeSize < maxTree && walkers.size() < maxWalkers) {
-		walkers.add(new Walker()); 
+		walkers.add(new Walker(maxRadius)); 
 	}
-	
+	//Sub iterations/frames
 	for (int n = 0; n < iterations; n++) {
+		// for every walker
 		for (int i = 0; i < walkers.size(); i++) {
+			//Walk
 			Walker walker = walkers.get(i);
-			walker.walk();
+			walker.walk(maxRadius);
 			Walker middle = trees.get(getTreeSection(width / 2, height / 2)).get(0);
 			float dist_ = dist(middle.pos.x, middle.pos.y, walker.pos.x, walker.pos.y);
+			//Only check collision if inside treshold radius
 			if (dist_ < 2 * radius + maxDist) {
 				// println(walker.pos.x,walker.pos.y,getTreeSection(walker.pos.x, walker.pos.y));
-	    int index = getTreeSection(walker.pos.x, walker.pos.y);
-				if (walker.checkStuck(trees.get(constrain(index, 0, trees.size() - 1)), stickiness)
-		    || walker.checkStuck(trees.get(constrain(index - 1, 0, trees.size() - 1)), stickiness)
-		    || walker.checkStuck(trees.get(constrain(index + 1, 0, trees.size() - 1)), stickiness)
+				int index = getTreeSection(walker.pos.x, walker.pos.y); //<>//
+				//Only check neighbooring screen sections with their trees for collision
+				if (walker.checkStuck(trees.get(constrain(index, 0, trees.size() - 1)), stickiness) //<>//
+				|| walker.checkStuck(trees.get(constrain(index - 1, 0, trees.size() - 1)), stickiness)
+				|| walker.checkStuck(trees.get(constrain(index + 1, 0, trees.size() - 1)), stickiness)
 				|| walker.checkStuck(trees.get(constrain(index - ceil(width / sectionSize), 0, trees.size() - 1)), stickiness)
-		    || walker.checkStuck(trees.get(constrain(index - ceil(width / sectionSize) - 1, 0, trees.size() - 1)), stickiness)
-		    || walker.checkStuck(trees.get(constrain(index - ceil(width / sectionSize) + 1, 0, trees.size() - 1)), stickiness)
+				|| walker.checkStuck(trees.get(constrain(index - ceil(width / sectionSize) - 1, 0, trees.size() - 1)), stickiness)
+				|| walker.checkStuck(trees.get(constrain(index - ceil(width / sectionSize) + 1, 0, trees.size() - 1)), stickiness)
 				|| walker.checkStuck(trees.get(constrain(index + ceil(width / sectionSize), 0, trees.size() - 1)), stickiness)
-		    || walker.checkStuck(trees.get(constrain(index + ceil(width / sectionSize) - 1, 0, trees.size() - 1)), stickiness)
-		    || walker.checkStuck(trees.get(constrain(index + ceil(width / sectionSize) + 1, 0, trees.size() - 1)), stickiness) //<>//
-		  ) {
-		   //println(walker.pos.x, walker.pos.y, getTreeSection(walker.pos.x, walker.pos.y)); //<>//
+				|| walker.checkStuck(trees.get(constrain(index + ceil(width / sectionSize) - 1, 0, trees.size() - 1)), stickiness) //<>//
+				|| walker.checkStuck(trees.get(constrain(index + ceil(width / sectionSize) + 1, 0, trees.size() - 1)), stickiness) //<>//
+				) {
+		   	//println(walker.pos.x, walker.pos.y, getTreeSection(walker.pos.x, walker.pos.y)); //<>//
+				//Update maxdist if nessesary and add current walker to the correspondingtree and remove walker from walkers
 					if (dist_ > maxDist) {maxDist = dist_;}
 					trees.get(index).add(walker);
 					treeSize++;
@@ -72,40 +83,45 @@ void draw() {
 			}
 		} //<>//
 	}
-	//for (int i = 0; i < walkers.size(); i++) {
-	//	walkers.get(i).show(radius, color(255));
-	//}
+	//Show walkers
+	for (int i = 0; i < walkers.size(); i++) {
+		walkers.get(i).show(radius, color(255));
+	}
+	//Show tree
 	for (int i = 0; i < trees.size(); i++) {
 		//color col = color(0,0,0);
 		ArrayList<Walker> tree = trees.get(i);
+		Walker middle = trees.get(getTreeSection(width / 2, height / 2)).get(0);
 		for (int j = 0; j < tree.size(); j++) {
 	    Walker walker = tree.get(j);
-	    Walker middle = trees.get(getTreeSection(width / 2, height / 2)).get(0);
+			//Get colorramp value based on distante to the middle
 	    float dist_ = dist(middle.pos.x, middle.pos.y, walker.pos.x, walker.pos.y);
 	    color col = WikiInterpolant.getGradientMonotonCubic((float) dist_, 100);
 	    walker.show(radius, col);
 		}
 	}
 	println(frameRate, treeSize, walkers.size());
-  if (treeSize - prevTreeSize > imgTreshold){
+	//If change is substantial save frame
+  if (treeSize - prevTreeSize > imgTreshold && saveImg){
     save("pictures_" + seed + "/tree_" + String.valueOf(imgCount).substring(1) + ".png");
     imgCount++;
     prevTreeSize = treeSize;
   }
-	if (walkers.size() == 0) {
+	//If limit reached, draw last time, and save final frame
+	if (treeSize >= maxTree ) {
 		noLoop();
 		for (int i = 0; i < trees.size(); i++) {
 			//color col = color(0,0,0);
 			ArrayList<Walker> tree = trees.get(0);
+	    Walker middle = trees.get(getTreeSection(width / 2, height / 2)).get(0);
 			for (int j = 0; j < tree.size(); j++) {
 	    Walker walker = tree.get(j);
-	    Walker middle = trees.get(getTreeSection(width / 2, height / 2)).get(0);
 	    float dist_ = dist(middle.pos.x, middle.pos.y, walker.pos.x, walker.pos.y);
 				color col = WikiInterpolant.getGradientMonotonCubic((float) dist_, 100);
 				walker.show(radius, col);
 			}
 		}
-  save("pictures_" + seed + "/tree_" + String.valueOf(imgCount).substring(1) + ".png");
+  if (saveImg){save("pictures_" + seed + "/tree_" + String.valueOf(imgCount).substring(1) + ".png");}
 	}
 }
 
