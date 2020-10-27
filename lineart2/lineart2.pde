@@ -1,7 +1,7 @@
 //ArrayList<PVector> prevPoints;
 ArrayList<PVector> points;
 PGraphics big;
-int w = 2000;
+int w = 500;
 int h = 3000;
 float res = 0.3;
 int hd = 3;
@@ -13,49 +13,52 @@ float noiseRange = 10;
 int rmax = 0;
 int rmin = 0;
 int hmin = 0;
-color bg = color(255);
-color lineColor = color(22, 50);
+color bg = color(82,1,32);
+color lineColor = color(242,197,61, 80);
 int seed = parseInt(String.valueOf(floor(random(1000000,10000000))).substring(1));
+boolean saving = false;
 
-//void setting(){}
+void settings(){
+  size(floor(w * res), floor(h * res));
+  smooth(8);
+}
 
 void setup() {
-	size(1000, 1000);
-	//prevPoints = new ArrayList<PVector>();
-	//println(points);
+  big = createGraphics(w,h);
+  println(seed);
+  noiseSeed(seed);
+  randomSeed(seed);
 	points = new ArrayList<PVector>();
-	//println(points);
 }
 
 void draw() {
-	//prevPoints = points;
 	if (points.size() == 0) {
-  	//println("firstrun");
-  	background(bg);
-  	for (int i = 0; i < height / hd; i++) {
+    big.beginDraw();
+  	big.background(bg);
+    big.endDraw();
+  	for (int i = 0; i < h / hd; i++) {
   	  PVector point = getNewPoint(3,i);
   	  xoff +=0.01;
   	  points.add(point);
-  	  if (point.x > rmax) {rmax = constrain(ceil(point.x), 0, width);}
+  	  if (point.x > rmax) {rmax = constrain(ceil(point.x), 0, w-1);}
   	}
 	}
 	else{
-  	//println("nexRuns");
-  	loadPixels();
+  	big.loadPixels();
   	points = new ArrayList<PVector>();
-  	int locRmin = width;
+  	int locRmin = w;
     int locHmin = 0;
-  	for (int i = 0; i < height / hd; i++) {
+  	for (int i = 0; i < h / hd; i++) {
   	  int y = i * hd;
   	  int x = rmax;
-  	  while(pixels[y * width + x] == color(bg)) {
-  	    x--;
+  	  while(big.pixels[y * w + x] == color(bg)) {
+  	    x--; //<>//
   	  }
       PVector point;
-      if (floor(x) >= width){
+      if (floor(x) >= w-1){
   	    point = getNewPoint(i);
         //stroke(255,0,0);
-        fill(255,0,0);
+        //fill(255,0,0);
         //line(points.get(points.size()).x,points.get(points.size()).y,point.x, point.y);
         //ellipse(points.get(points.size()).x-1,points.get(points.size()).y-1,1,1);
         println("out");
@@ -64,7 +67,7 @@ void draw() {
       }
   	  points.add(point);
   	  if (point.x > rmax) {
-    	  rmax = constrain(ceil(point.x), 0, width-1);
+    	  rmax = constrain(ceil(point.x), 0, w-1);
     	}
   	  if (point.x < locRmin) {
         locRmin = ceil(point.x);
@@ -78,19 +81,38 @@ void draw() {
   	}
   	//updatePixels();
 	}
-	noFill();
-	stroke(lineColor);
-	strokeWeight(0.5);
-	beginShape();
+  big.beginDraw();
+	big.noFill();
+	big.stroke(lineColor);
+	big.strokeWeight(0.5);
+  //big.translate(margin, margin);
+	big.beginShape();
 	for (int i = 0; i < points.size(); i++) {
-	vertex(points.get(i).x, points.get(i).y);
+	  big.vertex(points.get(i).x, points.get(i).y);
 	}
-	endShape();
+	big.endShape();
+  big.noStroke();
+  big.fill(bg);
+  big.rect(w,0,margin, h);
+  big.endDraw();
+  
+  //background(bg);
+  image(big, 0, 0, width, height);
 
   //fill(255,0,0);
   //ellipse(rmin, hmin, 2, 2);
-	if (rmin >= width) {
-    println("done");
+	if (rmin >= w) {
+    println("Done Generating");
+    if(saving){
+      println("saving...");
+      String picName = "pictures//line_" + seed + ".png";
+      PGraphics art = createGraphics(w,h);
+      art.beginDraw();
+      art.background(bg);
+      art.image(big, margin, margin, w - 2*margin, h - 2*margin);
+      art.save(picName);
+      println("picture saved as:", picName);
+    }
 	  noLoop(); //<>//
 	}
 	 //noLoop();
@@ -98,7 +120,7 @@ void draw() {
 }
 
 PVector getNewPoint(int y){
-  return new PVector(width, y * hd);
+  return new PVector(w+5, y * hd);
 }
 
 PVector getNewPoint(int x, int y) {
