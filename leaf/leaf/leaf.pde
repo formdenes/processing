@@ -3,32 +3,31 @@ ArrayList<ArrayList<PVector>> fractures = new ArrayList<ArrayList<PVector>>();
 // ArrayList<PVector> fracture = new ArrayList<PVector>();
 ArrayList<PVector> masses;
 IntList massCounters;
-int sourceSize = 10000;
-int step = 5;
-int FOW = 150;
-int DENS = 5;
+int sourceSize = 500;
+int step = 20;
+int FOW = 50;
+int DENS = 10;
 
 
 void setup(){
-  size(1000,1000);
-  sources = generateSources(sources);
+  size(500,500);
   ArrayList<PVector> fracture1 = new ArrayList<PVector>();
-  ArrayList<PVector> fracture2 = new ArrayList<PVector>();
-  ArrayList<PVector> fracture3 = new ArrayList<PVector>();
-  ArrayList<PVector> fracture4 = new ArrayList<PVector>();
-  fracture1.add(new PVector(width/2, height-FOW));
-  fracture2.add(new PVector(width/2, FOW));
-  fracture3.add(new PVector(width-FOW, height/2));
-  fracture4.add(new PVector(FOW, height/2));
+  // ArrayList<PVector> fracture2 = new ArrayList<PVector>();
+  // ArrayList<PVector> fracture3 = new ArrayList<PVector>();
+  // ArrayList<PVector> fracture4 = new ArrayList<PVector>();
+  fracture1.add(new PVector(width/2, height));
+  // fracture2.add(new PVector(width/2, FOW));
+  // fracture3.add(new PVector(width-FOW, height/2));
+  // fracture4.add(new PVector(FOW, height/2));
   fractures.add(fracture1);
-  fractures.add(fracture2);
-  fractures.add(fracture3);
-  fractures.add(fracture4);
-  frameRate(30);
+  // fractures.add(fracture2);
+  // fractures.add(fracture3);
+  // fractures.add(fracture4);
+  frameRate(4);
 }
 
 void draw(){
-  sources = generateSources(sources);
+  sources = generateSources(sources, fractures);
   background(230);
   masses = new ArrayList<PVector>();
   massCounters = new IntList();
@@ -36,21 +35,35 @@ void draw(){
     masses.add(new PVector(0,0));
     massCounters.append(0);
   }
-  for(int i = 0; i < sources.size(); i++){
-    PVector source = sources.get(i);
+  for(int s = 0; s < sources.size(); s++){
+    PVector source = sources.get(s);
+    float minDist = FOW;
+    Integer minF = null;
+    Integer minN = null;
     fill(255, 0, 0);
     noStroke();
     circle(source.x, source.y, 2);
-    for(int j = 0; j < fractures.size(); j++){
-      ArrayList<PVector> fracture = fractures.get(j);
-      PVector node = fracture.get(fracture.size() -1);
-      float _dist = dist(node.x, node.y, source.x, source.y);
-      if(_dist <= FOW){
-        masses.get(j).x += source.x;
-        masses.get(j).y += source.y;
-        massCounters.set(j, massCounters.get(j) + 1);
-        sources.remove(i); //<>//
+    for(int f = 0; f < fractures.size(); f++){
+      ArrayList<PVector> fracture = fractures.get(f);
+      for(int n = 0; n < fracture.size(); n++){
+        PVector node = fracture.get(n);
+        float _dist = dist(node.x, node.y, source.x, source.y);
+        if(_dist <= minDist){
+          minDist = _dist;
+          minF = f;
+          minN = n;
+          // masses.get(f).x += source.x;
+          // masses.get(f).y += source.y;
+          // massCounters.set(f, massCounters.get(f) + 1);
+          // sources.remove(s); //<>//
+        }
       }
+    }
+    if(minF != null){
+      masses.get(minF).x += source.x;
+      masses.get(minF).y += source.y;
+      massCounters.set(minF, massCounters.get(minF) + 1);
+      sources.remove(s); //<>//
     }
   } //<>//
   for(int i = 0; i < fractures.size(); i++){
@@ -93,9 +106,9 @@ void draw(){
 }
 
 
-ArrayList<PVector> generateSources(ArrayList<PVector> sources){
-  while(sources.size() < sourceSize){
-    PVector source = new PVector(random(-FOW, width + FOW), random(-FOW, height + FOW));
+ArrayList<PVector> generateSources(ArrayList<PVector> sources, ArrayList<ArrayList<PVector>> fractures){
+  for(int n = 0; n < sourceSize; n++){
+    PVector source = new PVector(random(0, width), random(0, height));
     boolean free = true;
     for(int i = 0; i < sources.size(); i++){
       float _dist = dist(source.x, source.y, sources.get(i).x, sources.get(i).y);
@@ -103,6 +116,17 @@ ArrayList<PVector> generateSources(ArrayList<PVector> sources){
         free = false;
         break;
       }
+    }
+    for(int i = 0; i < fractures.size(); i++){
+      ArrayList<PVector> fracture = fractures.get(i);
+      for(int j = 0; j < fracture.size(); j++){
+        float _dist = dist(source.x, source.y, fracture.get(j).x, fracture.get(j).y);
+        if(_dist <= DENS){
+        free = false;
+        break;
+        }
+      }
+      if(!free){break;}
     }
     if(free){
       sources.add(source);
