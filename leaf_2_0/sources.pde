@@ -30,9 +30,52 @@ class Sources {
   }
 
   void generate(Vein vein){
+    PVector[] vertices = new PVector[4];
+    vertices[0] = new PVector(0,0);
+    vertices[1] = new PVector(width, 0);
+    vertices[2] = new PVector(width, height);
+    vertices[3] = new PVector(0, height);
+    // noFill();
+    // stroke(255, 0, 0);
+    // beginShape();
+    // vertex(vertices[0].x,vertices[0].y);
+    // vertex(vertices[1].x,vertices[1].y);
+    // vertex(vertices[2].x,vertices[2].y);
+    // vertex(vertices[3].x,vertices[3].y);
+    // endShape(CLOSE);
+    generate(vein, vertices);
+  }
+
+  void generate(Vein vein, PVector[] vertices){
     for (int n = 0; n < dartThrows; n++) {
       PVector source = new PVector(random(0, width), random(0, height));
       boolean free = true;
+      int next = 0;
+      fill(94, 204, 69);
+      stroke(198, 255, 191);
+      beginShape();
+      for (int current=0; current<vertices.length; current++) {
+        // get next vertex in list
+        // if we've hit the end, wrap around to 0
+        next = current+1;
+        if (next == vertices.length) next = 0;
+
+        // get the PVectors at our current position
+        // this makes our if statement a little cleaner
+        PVector vc = vertices[current];    // c for "current"
+        PVector vn = vertices[next];       // n for "next"
+
+        // compare position, flip 'collision' variable
+        // back and forth
+        if (((vc.y >= source.y && vn.y < source.y) || (vc.y < source.y && vn.y >= source.y)) &&
+            (source.x < (vn.x-vc.x)*(source.y-vc.y) / (vn.y-vc.y)+vc.x)) {
+                free = !free;
+        }
+        
+        vertex(vc.x, vc.y);
+      }
+      endShape(CLOSE);
+      free = !free;
       for (int i = 0; i < sources.size() && free; i++) {
         float _dist = dist(source.x, source.y, sources.get(i).x, sources.get(i).y);
         if (_dist <= BIRTHDIST) {

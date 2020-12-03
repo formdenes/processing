@@ -110,7 +110,7 @@ class Vein {
         PVector cb = PVector.sub(b, c);
           if (abs(1 - abs(PVector.dot(ab, mass)/(ab.mag()*mass.mag()))) < minAngle ||
               abs(1 - abs(PVector.dot(cb, mass)/(cb.mag()*mass.mag()))) < minAngle){
-            free = false;
+            free = false; //<>//
           }
         }
         if (free){
