@@ -63,6 +63,7 @@ class Node {
   }
   void showMass(color col){
     stroke(col);
+    strokeWeight(1);
     line(pos.x, pos.y, pos.x + mass.x * nodeSize, pos.y + mass.y * nodeSize);
   }
 }

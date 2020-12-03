@@ -35,14 +35,14 @@ class Sources {
       boolean free = true;
       for (int i = 0; i < sources.size() && free; i++) {
         float _dist = dist(source.x, source.y, sources.get(i).x, sources.get(i).y);
-        if (_dist <= DENS) {
+        if (_dist <= BIRTHDIST) {
           free = false;
           break;
         }
       }
       for (int j = 0; j < vein.nodes.size() && free; j++) {
         float _dist = dist(source.x, source.y, vein.getNode(j).pos.x, vein.getNode(j).pos.y);
-        if (_dist <= DENS) {
+        if (_dist <= BIRTHDIST) {
           free = false;
           break;
           }
@@ -61,7 +61,7 @@ class Sources {
       boolean free = true;
       for (int j = 0; j < vein.nodes.size() && free; j++) {
         float _dist = dist(source.x, source.y, vein.getNode(j).pos.x, vein.getNode(j).pos.y);
-        if (_dist <= DENS) {
+        if (_dist <= KILLDIST) {
           free = false;
           break;
           }

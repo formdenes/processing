@@ -39,6 +39,8 @@ class Vein {
       // if (i >= 1) {
       //   Node prevNode = nodes.get(i-1);
         stroke(col);
+        // stroke(i%10*25,floor(i/10)*25,floor(i/100)*25);
+        // stroke(i%256);
         strokeWeight(node.weight);
 	    	line(node.pos.x, node.pos.y, nodes.get(node.prevNode).pos.x, nodes.get(node.prevNode).pos.y);
 			// }
@@ -91,17 +93,40 @@ class Vein {
       if(!(mass.x == 0 && mass.y == 0)){
         Node newNode = new Node(pos.x + mass.x * nodeSize, pos.y + mass.y * nodeSize);
         newNode.prevNode = i;
-        if (node.childNode != 0){
-          newNode.level = node.level + 1;
-          // float _weight = pow(pow(node.weight, exponent) - pow(nodes.get(node.childNode).weight, exponent),1.0/exponent);
-          // newNode.weight = _weight; //<>//
-        } else{
-          node.childNode = nodes.size();
-          newNode.level = node.level;
-          // newNode.weight = node.weight - growth;
+        boolean free = true;
+        // for (int j = 0; j < nodes.size() && free; j++) {
+        //   float _dist = dist(pos.x, node.pos.y, newNode.pos.x, newNode.pos.y);
+        //   if (_dist <= nodeSize) {
+        //     free = false;
+        //     break;
+        //   }
+        // }
+        //ANGLE CHECK, NOT WORKING
+        // PVector a = nodes.get(node.prevNode).pos;
+        // PVector b = node.pos;
+        // if (PVector.angleBetween(a,b)-mass.heading()%(PI/4)>minAngle){
+        //   free = false;
+        // }
+        // if (node.childNode != 0){
+        //   PVector c = nodes.get(node.childNode).pos;
+        //   if (PVector.angleBetween(c,b)-mass.heading()%(PI/4)>minAngle){
+        //     free = false;
+        //   }
+        // }
+        if (free){
+          if (node.childNode != 0){
+            newNode.level = node.level + 1;
+            
+            // float _weight = pow(pow(node.weight, exponent) - pow(nodes.get(node.childNode).weight, exponent),1.0/exponent);
+            // newNode.weight = _weight; //<>//
+          } else{
+            node.childNode = nodes.size();
+            newNode.level = node.level;
+            // newNode.weight = node.weight - growth;
+          }
+          // newNode.weight -= newNode.level*2;
+          nodes.add(newNode); //<>//
         }
-        // newNode.weight -= newNode.level*2;
-        nodes.add(newNode);
       }
     }
   }
