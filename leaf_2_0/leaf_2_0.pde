@@ -11,7 +11,7 @@ float minWidth = 1.5;
 int step = 20;
 int BIRTHDIST = 5;
 int KILLDIST = 10;
-float minAngle = 0.0745;
+float minAngle = 0.02;
 
 float nodeSize = 10.0;
 float sourceSize = 3.0;

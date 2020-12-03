@@ -102,17 +102,17 @@ class Vein {
         //   }
         // }
         //ANGLE CHECK, NOT WORKING
-        // PVector a = nodes.get(node.prevNode).pos;
-        // PVector b = node.pos;
-        // if (PVector.angleBetween(a,b)-mass.heading()%(PI/4)>minAngle){
-        //   free = false;
-        // }
-        // if (node.childNode != 0){
-        //   PVector c = nodes.get(node.childNode).pos;
-        //   if (PVector.angleBetween(c,b)-mass.heading()%(PI/4)>minAngle){
-        //     free = false;
-        //   }
-        // }
+        if (node.childNode != 0){
+        PVector a = nodes.get(node.prevNode).pos;
+        PVector b = node.pos;
+        PVector c = nodes.get(node.childNode).pos;
+        PVector ab = PVector.sub(b,a);
+        PVector cb = PVector.sub(b, c);
+          if (abs(1 - abs(PVector.dot(ab, mass)/(ab.mag()*mass.mag()))) < minAngle ||
+              abs(1 - abs(PVector.dot(cb, mass)/(cb.mag()*mass.mag()))) < minAngle){
+            free = false;
+          }
+        }
         if (free){
           if (node.childNode != 0){
             newNode.level = node.level + 1;
