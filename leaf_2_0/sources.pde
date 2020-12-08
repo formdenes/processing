@@ -48,7 +48,7 @@ class Sources {
 
   void generate(Vein vein, PVector[] vertices){
     for (int n = 0; n < dartThrows; n++) {
-      PVector source = new PVector(random(0, width), random(0, height));
+      PVector source = new PVector(random(width / s * o.x - ((s - o.x) * z), width / s * o.x + ((s - o.x) * z)), random(height / s * o.y - ((o.y) * z), height / s * o.y + ((s - o.y) * z)));
       boolean free = true;
       int next = 0;
       fill(94, 204, 69);
@@ -62,9 +62,12 @@ class Sources {
 
         // get the PVectors at our current position
         // this makes our if statement a little cleaner
-        PVector vc = vertices[current];    // c for "current"
-        PVector vn = vertices[next];       // n for "next"
-
+        PVector vc = PVector.mult(vertices[current],z) ;    // c for "current"
+        PVector vn = PVector.mult(vertices[next],z);       // n for "next"
+        vc.x += width / s * o.x - (o.x * z);
+        vc.y += height / s * o.y - (o.y * z);
+        vn.x += width / s * o.x - (o.x * z);
+        vn.y += height / s * o.y - (o.y * z);
         // compare position, flip 'collision' variable
         // back and forth
         if (((vc.y >= source.y && vn.y < source.y) || (vc.y < source.y && vn.y >= source.y)) &&
