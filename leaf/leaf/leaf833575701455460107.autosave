@@ -1,0 +1,51 @@
+ArrayList<PVector> sources = new ArrayList<PVector>();
+ArrayList<PVector> nodes = new ArrayList<PVector>();
+int sourceSize = 20;
+int step = 30;
+
+
+void setup(){
+  size(500,500);
+  for(int i = 0; i < sourceSize; i++){
+    PVector source = new PVector(random(0, width), random(0, width));
+    sources.add(source);
+  }
+  nodes.add(new PVector(width/2, height-50));
+  frameRate(4);
+}
+
+void draw(){
+  background(230);
+  PVector mass = new PVector(0,0);
+  for(int i = 0; i < sources.size(); i++){
+    PVector source = sources.get(i);
+    stroke(255, 0, 0);
+    strokeWeight(3);
+    noFill();
+    circle(source.x, source.y, 10);
+    mass.x += source.x;
+    mass.y += source.y;
+  }
+  mass.x = mass.x / sources.size();
+  mass.y = mass.y / sources.size();
+  stroke(0, 0, 255);
+  strokeWeight(3);
+  noFill();
+  circle(mass.x, mass.y, 10);
+  for(int i = 0; i < nodes.size(); i++){
+    PVector node = nodes.get(i);
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    noFill();
+    circle(node.x, node.y, 10);
+    if (i == nodes.size()-1){
+      float xdist = mass.x - node.x;
+      float ydist = mass.y - node.y;
+      float nxdist = xdist * (xdist * xdist + ydist * ydist) / step / step;
+      float nydist = ydist * (xdist * xdist + ydist * ydist) / step / step;
+      PVector nNode = new PVector(xdist * (xdist * xdist + ydist * ydist) / step / step, ydist * (xdist * xdist + ydist * ydist) / step / step);
+      nodes.add(nNode);
+    }
+  }
+  // noLoop(); //<>//
+}
