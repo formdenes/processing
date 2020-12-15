@@ -43,19 +43,21 @@ class Node {
     }
   }
 
-  void calcMass(){
+  ArrayList<PVector> calcMass(){
+    ArrayList<PVector> sourcesToRemove = new ArrayList<PVector>();
     if(sources.size() > 0){
       mass = new PVector(0,0);
       for(PVector norm : norms){
         mass.add(norm);
       }
       mass.normalize();
-      sources = new ArrayList<PVector>();
+      sourcesToRemove.addAll(sources);
     }
     else{
       norms = new ArrayList<PVector>();
       mass = new PVector();
     }
+    return sourcesToRemove;
   }
 
   void showMass(){
