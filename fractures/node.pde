@@ -16,14 +16,14 @@ class Node {
   void show(color col, float size){
     noStroke();
     fill(col);
-    circle(pos.x, pos.y, size);
+    circle(pos.x, pos.y, 3);
     for (PVector source : sources){
       fill(0, 0, 240);
       circle(source.x, source.y, 2); //<>// //<>//
     }
     noFill();
     stroke(col);
-    circle(pos.x, pos.y, FOV * 2);
+    circle(pos.x, pos.y, size * 2);
   }
 
   void norm(){
