@@ -3,6 +3,9 @@ final int w = 3000;
 final int h = 3000;
 final color bg = color(240);
 final color line = color(20);
+final boolean generateColor = true;
+final boolean saveing = true;
+final int picNum = 10;
 
 String seed = "0";
 color randomColor;
@@ -24,7 +27,7 @@ void settings(){
 
 void setup() {
   seed = nf(floor(random(1000000)),6);
-	// seed = "112360";
+	//  seed = "985644";
 	randomSeed(Integer.parseInt(seed));
 	big = createGraphics(w, h, P2D);
 	big.smooth(8);
@@ -62,33 +65,39 @@ void draw(){
     // big.stroke(20,50);
     // big.strokeWeight(length / 10 * 2);
     // big.line(x, y, xx, yy);
-	}
+	} //<>//
 	big.loadPixels();
-	big.colorMode(HSB, 255);
-	for(int x = 0; x < w; x++){
-		for(int y = 0; y < h; y++){
-			color currPixel = big.pixels[x + (y * w)];
-			float h = hue(currPixel); //<>//
-			float s = saturation(currPixel);
-			float b = brightness(currPixel); //<>//
-			float a = alpha(currPixel);
+	if(generateColor){
+		big.colorMode(HSB, 255);
+		for(int x = 0; x < w; x++){
+			for(int y = 0; y < h; y++){
+				color currPixel = big.pixels[x + (y * w)];
+				float h = hue(currPixel); //<>//
+				float s = saturation(currPixel);
+				float b = brightness(currPixel); //<>//
+				float a = alpha(currPixel);
 
-			if(b < 200){ //<>//
-				color _col = interpolant.getGradientMonotonCubic((float) y, floor(a));
-				big.pixels[x + (y * w)] = _col;
-				// big.pixels[x + (y * w)] = color(hue(randomColor), saturation(randomColor), brightness(randomColor), a); //<>// //<>//
+				if(b < 200){ //<>//
+					color _col = interpolant.getGradientMonotonCubic((float) y, floor(a));
+					big.pixels[x + (y * w)] = _col;
+					// big.pixels[x + (y * w)] = color(hue(randomColor), saturation(randomColor), brightness(randomColor), a); //<>// //<>//
+				}
 			}
 		}
+		big.colorMode(RGB, 255);
+		big.updatePixels();
 	}
-	big.colorMode(RGB, 255);
-	big.updatePixels();
   big.endDraw();
   image(big, margin, margin, width - 2 * margin, height - 2 * margin);
-	save("lines_" + seed);
-	if(counter >= 10){
-	noLoop();
-	} else {
-		counter++;
+	if(saveing){
+		save("lines_" + seed);
+		if(counter < picNum){
+			counter++;
+		} else {
+			println("END");
+			noLoop();
+			exit();
+		}
 	}
 }
 
