@@ -1,4 +1,4 @@
-final int STEP = 50;
+final int STEP = 100;
 final int w = 1000;
 final int h = 1000;
 
@@ -8,19 +8,16 @@ PGraphics pg;
 ArrayList<Node> nodes;
 
 void settings(){
-  size(w,h,P3D);
+  size(w,h,P2D);
 }
 
 void setup(){
-  pg = createGraphics(w, h, P3D);
+  pg = createGraphics(w, h, P2D);
   nodes = new ArrayList<Node>();
 }
 
 void draw(){
   pg.beginDraw();
-  if(frameCount > 1){
-    noLoop(); //<>//
-  }
   for(int y = 0; y < (h / STEP )+ 1; y++){
     for(int x = 0; x < w /STEP + 1; x++){
       nodes.add(new Node(x * STEP, y * STEP));
@@ -51,29 +48,17 @@ void draw(){
     }
   }
 
-
-  // pg.beginDraw();
   pg.background(bg);
   pg.stroke(20);
   pg.fill(240, 20, 20);
   pg.textSize(12);
-  background(bg);
-  stroke(20);
-  fill(240, 20, 20);
-  textSize(12);
   for(int i = 0; i < nodes.size(); i++){
     Node node = nodes.get(i);
-    // circle(node.pos.x, node.pos.y, 3);
-    pg.line(node.pos.x, node.pos.y, node.nextPos.x, node.nextPos.y);
-    line(node.pos.x, node.pos.y, node.nextPos.x, node.nextPos.y);
-    // text(i, node.pos.x, node.pos.y); //<>//
-    //  int ind = nodes.indexOf(node.nextNode);
-    //  text(ind, node.pos.x, node.pos.y); //<>//
+    betterLine(node.pos.x, node.pos.y, node.nextPos.x, node.nextPos.y, color(0), STEP / 10, pg);
   }
   pg.endDraw();
-  pg.save("pictures/1.png");
-  // image(pg, width, height);
-  // noLoop();
+  image(pg, 0, 0, width, height);
+  noLoop();
 }
 
 class Node {
@@ -91,7 +76,7 @@ class Node {
   }
 }
 
-int getIndex(int curInd, int dir){ //<>//
+int getIndex(int curInd, int dir){
   int nextInd = curInd;
   if(dir == 0){
     if(curInd % (w/STEP+1) != w/STEP){
@@ -104,6 +89,5 @@ int getIndex(int curInd, int dir){ //<>//
   }else if(dir == 3){
     if(curInd < w/STEP*(w/STEP+1)){nextInd = floor(curInd + (w/STEP+1));}
   }
-  // return (constrain(nextInd, 0, max);)
   return nextInd;
 }
