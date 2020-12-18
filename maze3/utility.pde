@@ -55,12 +55,14 @@ PGraphics plotArt(PGraphics original, color bg, float margin, int w, int h){
 String setSeed(){
   String seed = nf(floor(random(1000000)),6);
   randomSeed(Integer.parseInt(seed));
+  noiseSeed(Integer.parseInt(seed));
   println("Seed: ", seed);
   return seed;
 }
 
 String setSeed(String seed){
   randomSeed(Integer.parseInt(seed));
+  noiseSeed(Integer.parseInt(seed));
   return seed;
 }
 
