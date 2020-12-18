@@ -66,6 +66,7 @@ void draw(){
     // big.strokeWeight(length / 10 * 2);
     // big.line(x, y, xx, yy);
 	} //<>//
+	//Tint effect with gradient
 	big.loadPixels();
 	if(generateColor){
 		big.colorMode(HSB, 255);
