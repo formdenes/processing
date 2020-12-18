@@ -1,9 +1,9 @@
-final int STEP = 10;
-final int w = 4000;
-final int h = 5000;
+final int STEP = 20;
+final int w = 800;
+final int h = 1000;
 
 final color bg = color(240);
-final boolean saving = true;
+final boolean saving = false;
 final int picNum = 1;
 
 
@@ -15,6 +15,7 @@ ArrayList<Node> nodes;
 int counter = 0;
 String seed = "0";
 float margin = 100;
+float amp;
 
 void settings(){
   float res = min(displayWidth / (float) w, displayHeight / (float) h * 9 / 10);
@@ -23,7 +24,8 @@ void settings(){
 
 void setup(){
   margin = w/12;
-  seed = setSeed();
+  amp = STEP / 10 * 2;
+  seed = setSeed("303524");
   pg = createGraphics(w, h, P2D);
   pg.smooth(8);
   nodes = new ArrayList<Node>();
@@ -33,11 +35,12 @@ void setup(){
 }
 
 void draw(){
-   setup();
+  setup();
   pg.beginDraw();
-  for(int y = 0; y < (h / STEP )+ 1; y++){
-    for(int x = 0; x < w /STEP + 1; x++){
-      nodes.add(new Node(x * STEP, y * STEP));
+  for(int y = 0; y < ((h - 2*STEP) / STEP )+ 1; y++){
+    for(int x = 0; x < (w - 2*STEP) /STEP + 1; x++){
+      PVector noise = PVector.fromAngle(random(TWO_PI)).mult(random(amp));
+      nodes.add(new Node(STEP + x * STEP + noise.x, STEP + y * STEP + noise.y));
     }
   }
 
@@ -65,19 +68,16 @@ void draw(){
     }
   }
 
-  pg.stroke(20); //<>//
-  pg.fill(240, 20, 20); //<>//
+  pg.stroke(20);
+  pg.fill(240, 20, 20);
   pg.textSize(12);
   for(int i = 0; i < nodes.size(); i++){
     Node node = nodes.get(i);
-    betterLine(node.pos.x, node.pos.y, node.nextPos.x, node.nextPos.y, color(0), STEP / 10.0, pg); //<>//
-    // pg.noStroke(); //<>// //<>//
-    // pg.fill(255,0,0); //<>//
-    // pg.circle(node.pos.x, node.pos.y, 5);
-  }  //<>//
+    betterLine(node.pos.x, node.pos.y, node.nextPos.x, node.nextPos.y, color(0), STEP / 10.0, pg);
+  }
   tint(pg, interpolant);
-  pg.endDraw();  //<>//
-  image(pg, 0, 0, width, height); //<>//
+  pg.endDraw();
+  image(pg, 0, 0, width, height);
   if(saving){ 
     save("maze_" + seed, plotArt(pg, bg, margin, w, h), w, h); 
     if(counter < picNum - 1){ 
@@ -111,13 +111,13 @@ class Node {
 int getIndex(int curInd, int dir){
   int nextInd = curInd;
   if(dir == 0){
-    if(curInd % (w/STEP+1) != w/STEP){nextInd = curInd + 1;}
+    if(curInd % ((w - 2*STEP)/STEP+1) != (w - 2*STEP)/STEP){nextInd = curInd + 1;}
   }else if(dir == 1){
-    if(curInd > w/STEP){nextInd = floor(curInd - (w/STEP+1));}
+    if(curInd > (w - 2*STEP)/STEP){nextInd = floor(curInd - ((w - 2*STEP)/STEP+1));}
   }else if(dir == 2){
-    if(curInd % (w/STEP + 1) != 0){nextInd = curInd - 1;}
+    if(curInd % ((w - 2*STEP)/STEP + 1) != 0){nextInd = curInd - 1;}
   }else if(dir == 3){
-    if(curInd < w/STEP*(h/STEP+1)){nextInd = floor(curInd + (w/STEP+1));}
+    if(curInd < (w - 2*STEP)/STEP*((h - 2*STEP)/STEP+1)){nextInd = floor(curInd + ((w - 2*STEP)/STEP+1));}
   }
   return nextInd;
 }
