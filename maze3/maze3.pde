@@ -48,7 +48,7 @@ void draw(){
     for(int x = 0; x < (w - 2*STEP) /STEP + 1; x++){
       // PVector noise = PVector.fromAngle(noise(xoff, yoff) * TWO_PI).mult(random(amp));
       float b = map(brightness(distMap.pixels[x*STEP + y*STEP*(w - 2*STEP)]),0, 255, 0, 1);
-      PVector noise = PVector.fromAngle(b * TWO_PIkin).mult(b * amp);
+      PVector noise = PVector.fromAngle(b * TWO_PI).mult(b * amp);
       nodes.add(new Node(STEP + x * STEP + noise.x, STEP + y * STEP + noise.y));
       // nodes.add(new Node(STEP + x * STEP , STEP + y * STEP));
       xoff += inc;
@@ -114,9 +114,9 @@ void draw(){
   pg.textSize(12);
   for(int i = 0; i < nodes.size(); i++){
     Node _node = nodes.get(i);
-    betterLine(_node.pos.x, _node.pos.y, _node.nextPos.x, _node.nextPos.y, color(0), STEP / 10.0, pg);
-    // pg.fill(240, 0,0);
-    // pg.circle(_node.pos.x, _node.pos.y, 3);
+    // betterLine(_node.pos.x, _node.pos.y, _node.nextPos.x, _node.nextPos.y, color(0), STEP / 10.0, pg);
+    pg.fill(240, 0,0);
+    pg.circle(_node.pos.x, _node.pos.y, 3);
   }
   // tint(pg, interpolant);
   pg.endDraw();
