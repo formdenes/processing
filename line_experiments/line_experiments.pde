@@ -5,7 +5,9 @@ PGraphics pg;
 
 void setup(){
   size(500,1000, P2D);
+  smooth(8);
   pg = createGraphics(500,1000, P2D);
+  pg.smooth(8);
   // randomColor = color(random(255), random(255), random(255));
   // colors = getNiceColors(randomColor);
   // println(colors);
@@ -19,10 +21,11 @@ void draw(){
 
   betterLine(20, 0, 20, height, color(0), 3, pg);
   handLine(40, 0, 40, height, color(0), 3, pg);
+  handLine(60, 0, 60, height, color(0), 3, pg);
 
   pg.endDraw();
   image(pg, 0,0, width, height);
-  handLine(40, 0, 40, height, color(0), 3);
+  // handLine(40, 0, 40, height, color(0), 3, pg);
   // noStroke();
   // fill(randomColor);
   // rect(width/2, 0, 20, height);
