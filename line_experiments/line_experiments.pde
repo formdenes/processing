@@ -2,12 +2,17 @@
 // color[] colors;
 // color randomColor;
 PGraphics pg;
+ArrayList<Line> lines;
 
 void setup(){
   size(500,1000, P2D);
   smooth(8);
   pg = createGraphics(500,1000, P2D);
   pg.smooth(8);
+  lines = new ArrayList<Line>();
+  lines.add(new Line(20, 0, 20, height, color(0), 3, pg));
+  lines.add(new Line(40, 0, 40, height, color(0), 3, pg));
+  lines.add(new Line(60, 0, 60, height, color(0), 3, pg));
   // randomColor = color(random(255), random(255), random(255));
   // colors = getNiceColors(randomColor);
   // println(colors);
@@ -19,9 +24,12 @@ void draw(){
   pg.beginDraw();
   background(255);
 
-  betterLine(20, 0, 20, height, color(0), 3, pg);
-  handLine(40, 0, 40, height, color(0), 3, pg);
-  handLine(60, 0, 60, height, color(0), 3, pg);
+  lines.get(0).betterLine();
+  lines.get(1).handLine();
+  lines.get(2).handLineWidth();
+  // betterLine(20, 0, 20, height, color(0), 3, pg);
+  // handLine(40, 0, 40, height, color(0), 3, pg);
+  // handLine(60, 0, 60, height, color(0), 3, pg);
 
   pg.endDraw();
   image(pg, 0,0, width, height);
