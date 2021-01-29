@@ -4,6 +4,7 @@ class Line{
   color col;
   PGraphics pg;
   float size;
+  float xoff;
 
   Line(float x, float y, float xx, float yy, color col, float s, PGraphics g){
     this.col = col;
@@ -51,6 +52,7 @@ class Line{
   }
 
   void handLine(int rep){
+    float xoff = seed;
     for(int p = 0; p < points.size() - 1; p++){
       float x = points.get(p).x;
       float y = points.get(p).y;
@@ -61,8 +63,7 @@ class Line{
       int maxi = floor(_dist / dens);
       float xstep = (xx - x) / maxi;
       float ystep = (yy - y) / maxi;
-      float xoff = seed;
-      float ampl = size * 3;
+      float ampl = size * 2;
       PVector normal = new PVector(xx - x, yy - y);
       normal.normalize();
       normal.x = normal.x + normal.y;
@@ -74,14 +75,16 @@ class Line{
       pg.noFill();
       pg.beginShape();
       pg.curveVertex(x, y);
-      for(int i = 0; i < maxi + 1; i++){
-        normal.mult(noise(xoff) * ampl);
+      pg.curveVertex(x, y);
+      for(int i = 1; i < maxi; i++){
+        normal.mult((noise(xoff)) * ampl);
         float _x = x + xstep * i + normal.x;
         float _y = y + ystep*i + normal.y;
         pg.curveVertex(_x, _y); //<>//
         normal.normalize();
         xoff += .1;
       }
+      pg.curveVertex(xx, yy);
       pg.curveVertex(xx, yy);
       pg.endShape();
     }

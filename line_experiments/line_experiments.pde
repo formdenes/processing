@@ -13,6 +13,12 @@ void setup(){
   lines.add(new Line(20, 0, 20, height, color(0), 3, pg));
   lines.add(new Line(40, 0, 40, height, color(0), 3, pg));
   lines.add(new Line(60, 0, 60, height, color(0), 3, pg));
+  ArrayList<PVector> points = new ArrayList<PVector>();
+  for(int i = 0; i < 10; i++){
+    points.add(new PVector(80, i*100));
+    points.add(new PVector(500, i*100));
+  }
+  lines.add(new Line(points, color(0), 3, pg));
   // randomColor = color(random(255), random(255), random(255));
   // colors = getNiceColors(randomColor);
   // println(colors);
@@ -27,6 +33,7 @@ void draw(){
   lines.get(0).betterLine();
   lines.get(1).handLine();
   lines.get(2).handLineWidth();
+  lines.get(3).handLine();
   // betterLine(20, 0, 20, height, color(0), 3, pg);
   // handLine(40, 0, 40, height, color(0), 3, pg);
   // handLine(60, 0, 60, height, color(0), 3, pg);
