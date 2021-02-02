@@ -1,67 +1,96 @@
-// Interpolant inter;
-// color[] colors;
-// color randomColor;
-PGraphics pg;
-ArrayList<Line> lines;
 
-void setup(){
-  size(500,1000, P2D);
-  smooth(8);
-  pg = createGraphics(500,1000, P2D);
-  pg.smooth(8);
-  lines = new ArrayList<Line>();
-  lines.add(new Line(20, 0, 20, height, color(0), 3, pg));
-  lines.add(new Line(40, 0, 40, height, color(0), 3, pg));
-  lines.add(new Line(60, 0, 60, height, color(0), 3, pg));
-  ArrayList<PVector> points = new ArrayList<PVector>();
-  for(int i = 0; i < 10; i++){
-    points.add(new PVector(80, i*100));
-    points.add(new PVector(500, i*100));
+void betterLine(float x, float y, float xx, float yy, color col, float s, PGraphics g){
+  betterLine(x, y, xx, yy, col, s, g, 6);
+}
+
+void betterLine(float x, float y, float xx, float yy, color col, float s, PGraphics g, int rep){
+  g.noFill();
+  g.strokeCap(ROUND);
+  g.stroke(col);
+  g.strokeWeight(s);
+  g.line(x, y, xx, yy);
+  g.stroke(col, 10);
+  for(int n = 0; n < rep; n++){
+    g.strokeWeight(s*pow(1.1, n));
+    g.line(x, y, xx, yy);
   }
-  lines.add(new Line(points, color(0), 3, pg));
-  // randomColor = color(random(255), random(255), random(255));
-  // colors = getNiceColors(randomColor);
-  // println(colors);
-	// inter = new Interpolant((float) height - 50, colors, false);
-	
 }
 
-void draw(){
+void save(String name, PGraphics pg, int w, int h){
+  println("Saving...");
+  String picName = "pictures/" + name + ".png";
+  PGraphics art = createGraphics(w, h, P2D);
+  art.beginDraw();
+  art.image(pg, 0, 0, w, h);
+  art.save(picName);
+  println("picture saved as: ", picName);
+}
+
+
+color[] getNiceColors(color col){
+  return getNiceColors(col, 6);
+}
+
+color[] getNiceColors(color col, int num){
+  String hex = hex(col, 6);
+  String url = "https://www.thecolorapi.com/scheme?hex=" + hex + "&mode=analogic&count=" + String.valueOf(num) + "&format=json";
+  // println(url);
+  JSONObject json = loadJSONObject(url);
+  color[] colors = new color[num];
+  for (int i = 0; i < colors.length; i++){
+    colors[i] = unhex("FF" + json.getJSONArray("colors").getJSONObject(i).getJSONObject("hex").getString("clean"));
+  }
+  return colors;
+}
+
+PGraphics plotArt(PGraphics original, color bg, float margin, int w, int h){
+  PGraphics plotted = createGraphics(w, h, P2D);
+  plotted.beginDraw();
+  plotted.background(bg);
+  plotted.image(original, margin, margin, w - 2 * margin, h - 2 * margin);
+  plotted.endDraw();
+  return plotted;
+}
+
+String setSeed(){
+  String seed = nf(floor(random(1000000)),6);
+  randomSeed(Integer.parseInt(seed));
+  noiseSeed(Integer.parseInt(seed));
+  println("Seed: ", seed);
+  return seed;
+}
+
+String setSeed(String seed){
+  randomSeed(Integer.parseInt(seed));
+  noiseSeed(Integer.parseInt(seed));
+  return seed;
+}
+
+void tint(PGraphics pg, Interpolant interpolant){
   pg.beginDraw();
-  background(255);
+  pg.loadPixels();
+  pg.colorMode(HSB, 255);
+  for(int x = 0; x < pg.width; x++){
+    for(int y = 0; y < pg.height; y++){
+      color currPixel = pg.pixels[x + (y * pg.width)];
+      float h = hue(currPixel); 
+      float s = saturation(currPixel);
+      float b = brightness(currPixel); 
+      float a = alpha(currPixel);
 
-  lines.get(0).betterLine();
-  lines.get(1).handLine();
-  lines.get(2).handLineWidth();
-  lines.get(3).handLineWidth();
-  // betterLine(20, 0, 20, height, color(0), 3, pg);
-  // handLine(40, 0, 40, height, color(0), 3, pg);
-  // handLine(60, 0, 60, height, color(0), 3, pg);
-
-  pg.endDraw();
-  image(pg, 0,0, width, height);
-  // handLine(40, 0, 40, height, color(0), 3, pg);
-  // noStroke();
-  // fill(randomColor);
-  // rect(width/2, 0, 20, height);
-  // rect((width / 2) - 10, 0, 20, height);
-  // // translate(0, 50);
-  // for(int i = 0; i < colors.length; i ++){
-  //   color col = colors[i];
-  //   fill(col);
-  //   rect(0, i * (height - 50) / 6, width/2 - 10, (i + 1) * (height - 50) / 6);
-  // }
-  // loadPixels();
-  // for(int x = 0; x < width; x++){
-  //   for(int y = 0; y < height; y++){
-  //     if(x > width/2+10){
-  //       pixels[x + y * width] = inter.getGradientMonotonCubic(y, 255);
-  //     }
-  //   }
-  // }
-  // updatePixels();
-  noLoop();
+      if(b < 200 && !hex(currPixel,6).equals("CCCCCC")){ 
+        color _col = interpolant.getGradientMonotonCubic((float) y, floor(a));
+        pg.pixels[x + (y * pg.width)] = _col;
+        // pg.pixels[x + (y * w)] = color(hue(randomColor), saturation(randomColor), brightness(randomColor), a); //<>// //<>//
+      }
+    }
+  }
+  pg.updatePixels();
+  pg.colorMode(RGB, 255);
 }
+
+
+
 
 
 class Interpolant {
@@ -202,20 +231,4 @@ class Interpolant {
     float blue = bs[i] + c1bs[i] * diff + c2bs[i] * diffSq + c3bs[i] * diff * diffSq;
     return color(red, green, blue, (float) alpha);
   }
-}
-
-color[] getNiceColors(color col){
-  return getNiceColors(col, 6);
-}
-
-color[] getNiceColors(color col, int num){
-  String hex = hex(col, 6);
-  String url = "https://www.thecolorapi.com/scheme?hex=" + hex + "&mode=analogic&count=" + String.valueOf(num) + "&format=json";
-  // println(url);
-  JSONObject json = loadJSONObject(url);
-  color[] colors = new color[num];
-  for (int i = 0; i < colors.length; i++){
-    colors[i] = unhex("FF" + json.getJSONArray("colors").getJSONObject(i).getJSONObject("hex").getString("clean"));
-  }
-  return colors;
 }
