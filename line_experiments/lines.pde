@@ -63,7 +63,7 @@ class Line{
       int maxi = floor(_dist / dens);
       float xstep = (xx - x) / maxi;
       float ystep = (yy - y) / maxi;
-      float ampl = size * 2;
+      float ampl = size * .8;
       PVector normal = new PVector(xx - x, yy - y);
       normal.normalize();
       normal.x = normal.x + normal.y;
@@ -77,12 +77,12 @@ class Line{
       pg.curveVertex(x, y);
       pg.curveVertex(x, y);
       for(int i = 1; i < maxi; i++){
-        normal.mult((noise(xoff)) * ampl);
+        normal.mult((noise(xoff) - .5) * ampl);
         float _x = x + xstep * i + normal.x;
         float _y = y + ystep*i + normal.y;
         pg.curveVertex(_x, _y); //<>//
         normal.normalize();
-        xoff += .1;
+        xoff += 0.1*dens;
       }
       pg.curveVertex(xx, yy);
       pg.curveVertex(xx, yy);
@@ -95,6 +95,8 @@ class Line{
   }
 
   void handLineWidth(int rep){
+    float xoff = seed;
+    float xoff2 = seed + 99999;
     for(int p = 0; p < points.size() - 1; p++){
       float x = points.get(p).x;
       float y = points.get(p).y;
@@ -105,10 +107,8 @@ class Line{
       int maxi = floor(_dist / dens);
       float xstep = (xx - x) / maxi;
       float ystep = (yy - y) / maxi;
-      float xoff = seed;
-      float ampl = size * 3;
-      float xoff2 = seed + 99999;
-      float ampl2 = size * 1.5;
+      float ampl = size * .8;
+      float ampoff = .5;
       PVector normal = new PVector(xx - x, yy - y);
       normal.normalize();
       normal.x = normal.x + normal.y;
@@ -120,16 +120,18 @@ class Line{
       pg.noFill();
       pg.beginShape();
       pg.curveVertex(x, y);
-      for(int i = 0; i < maxi + 1; i++){
-        normal.mult(noise(xoff) * ampl);
+      pg.curveVertex(x, y);
+      for(int i = 0; i < maxi; i++){
+        normal.mult((noise(xoff) - .5) * ampl);
         float _x = x + xstep * i + normal.x;
         float _y = y + ystep*i + normal.y;
-        pg.strokeWeight(ampl2 * noise(xoff2));
+        pg.strokeWeight(size * (noise(xoff2) + ampoff));
         pg.curveVertex(_x, _y); //<>//
         normal.normalize();
-        xoff += .1;
+        xoff += 0.1*dens;
         xoff2 += .05;
       }
+      pg.curveVertex(xx, yy);
       pg.curveVertex(xx, yy);
       pg.endShape();
     }

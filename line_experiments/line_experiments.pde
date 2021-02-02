@@ -33,7 +33,7 @@ void draw(){
   lines.get(0).betterLine();
   lines.get(1).handLine();
   lines.get(2).handLineWidth();
-  lines.get(3).handLine();
+  lines.get(3).handLineWidth();
   // betterLine(20, 0, 20, height, color(0), 3, pg);
   // handLine(40, 0, 40, height, color(0), 3, pg);
   // handLine(60, 0, 60, height, color(0), 3, pg);
