@@ -1,6 +1,8 @@
+final int SMALLSTEP = 20;
 final int STEP = 100;
 final int w = 1000;
 final int h = 1000;
+
 
 final color bg = color(240);
 final boolean saving = false;
@@ -30,7 +32,7 @@ void settings(){
 void setup(){
   // distMap = loadImage("texture.jpg");
   margin = w/12;
-  // amp = STEP / 10 * 20;
+  // amp = SMALLSTEP / 10 * 20;
   seed = setSeed();
   // seed = setSeed("303524");
   pg = createGraphics(w, h, P2D);
@@ -44,20 +46,32 @@ void setup(){
 void draw(){
   setup();
   pg.beginDraw();
-  pg.background(240);
+  pg.background(255);
   lines = new ArrayList<Line>();
-  for(int j = 0; j < 10; j++){
-    ArrayList<PVector> points = new ArrayList<PVector>();
-    points.add(new PVector(0, STEP));
-    for(int n = 0; n < w/STEP; n++){
-      points.add(new PVector(n * STEP, 0));
-      points.add(new PVector(0, (n+1) * STEP));
+  for(int j = 0; j < w / STEP; j++){
+    for(int i = 0; i < h / STEP; i++){
+      ArrayList<PVector> points = new ArrayList<PVector>();
+      int x = j * STEP;
+      int xx = (j + 1) * STEP;
+      int y = i * STEP;
+      int yy = (i + 1) * STEP;
+      // pg.noFill();
+      // pg.stroke(0);
+      // pg.rect(x, y, xx, yy);
+      points.add(new PVector(x, y + SMALLSTEP));
+      for(int n = 0; n < STEP/SMALLSTEP; n++){
+        points.add(new PVector(x + n * SMALLSTEP, y));
+        points.add(new PVector(x, y + (n+1) * SMALLSTEP));
+      }
+      for(int n = 0; n < STEP/SMALLSTEP; n++){
+        points.add(new PVector(x + n * SMALLSTEP, yy));
+        points.add(new PVector(xx, y + n * SMALLSTEP));
+      }
+      Line line = new Line(points, color(0), 2, pg);
+      lines.add(line);
     }
-    for(int n = 0; n < w/STEP; n++){
-      points.add(new PVector(n * STEP, h));
-      points.add(new PVector(w, n * STEP));
-    }
-    Line line = new Line(points, color(0), 3, pg);
+  }
+  for(Line line : lines){
     line.handLineWidth();
   }
   pg.endDraw();

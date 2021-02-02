@@ -107,7 +107,7 @@ class Line{
       int maxi = floor(_dist / dens);
       float xstep = (xx - x) / maxi;
       float ystep = (yy - y) / maxi;
-      float ampl = size * .8;
+      float ampl = size * 2;
       float ampoff = .5;
       PVector normal = new PVector(xx - x, yy - y);
       normal.normalize();
@@ -122,7 +122,7 @@ class Line{
       pg.curveVertex(x, y);
       pg.curveVertex(x, y);
       for(int i = 0; i < maxi; i++){
-        normal.mult((noise(xoff) - .5) * ampl);
+        normal.mult((noise(xoff)) * ampl);
         float _x = x + xstep * i + normal.x;
         float _y = y + ystep*i + normal.y;
         pg.strokeWeight(size * (noise(xoff2) + ampoff));
