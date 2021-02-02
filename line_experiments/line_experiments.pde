@@ -60,7 +60,7 @@ void draw(){
   //   }
   // }
   // updatePixels();
-  // noLoop();
+  noLoop();
 }
 
 

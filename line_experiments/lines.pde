@@ -53,22 +53,29 @@ class Line{
 
   void handLine(int rep){
     float xoff = seed;
+    //Iterate over the points
     for(int p = 0; p < points.size() - 1; p++){
+      //Start and endpoint of the current linepart
       float x = points.get(p).x;
       float y = points.get(p).y;
       float xx = points.get(p + 1).x;
       float yy = points.get(p + 1).y;
+      //Define how often should there be a sub part
       float dens = 10;
       float _dist = dist(x,y,xx,yy);
       int maxi = floor(_dist / dens);
+      //Define the subpart steps
       float xstep = (xx - x) / maxi;
       float ystep = (yy - y) / maxi;
+      //Define the variation size
       float ampl = size * 2;
+      //Define normal vector based on line direction between two points
       PVector normal = new PVector(xx - x, yy - y);
       normal.normalize();
       normal.x = normal.x + normal.y;
       normal.y = normal.x - normal.y;
       normal.x = normal.x - normal.y;
+      //Set drawing conditions
       pg.fill(col);
       pg.stroke(col);
       pg.strokeWeight(size);
@@ -76,13 +83,15 @@ class Line{
       pg.beginShape();
       pg.curveVertex(x, y);
       pg.curveVertex(x, y);
+      //Iterate over sup points
       for(int i = 1; i < maxi; i++){
-        normal.mult((noise(xoff)) * ampl);
+        //Get normal deviation
+        normal.mult((noise(xoff)*2-1) * ampl);
         float _x = x + xstep * i + normal.x;
         float _y = y + ystep*i + normal.y;
         pg.curveVertex(_x, _y); //<>//
         normal.normalize();
-        xoff += .1;
+        xoff += .0001;
       }
       pg.curveVertex(xx, yy);
       pg.curveVertex(xx, yy);
