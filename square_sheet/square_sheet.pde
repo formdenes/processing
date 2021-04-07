@@ -1,4 +1,4 @@
-final int SMALLSTEP = 20;
+final int SMALLSTEP = 100;
 final int STEP = 100;
 final int w = 1000;
 final int h = 1000;
