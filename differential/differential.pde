@@ -115,7 +115,7 @@ void draw(){
   // Making movement and displaying nodes
   for (Node node : nodes){
     node.step(); //<>//
-    node.displayAttr();
+    // node.displayAttr();
     // node.displayRej();
     node.display();
     if (node.pos.x < 0 || node.pos.x > width || node.pos.y < 0 || node.pos.y > height){
