@@ -1,15 +1,15 @@
-float len = 50;
+float len = 20;
 // int frac = 5;
 // int dens = 5;
 
 void setup(){
-  size(2000, 2000, P2D);
+  size(1000, 1000, P2D);
   smooth(8);
 }
 
 void draw(){
   background(255);
-  strokeWeight(4);
+  strokeWeight(2);
   stroke(0);
   noFill();
   for(int i = 0; i < width/len; i++){
